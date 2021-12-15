@@ -25,40 +25,33 @@ import java.util.Collections;
 public class main_fragment extends Fragment {
 
     private boolean isDataLoaded = false;
+    private TextView term;
+    private TextView answer;
+    private ObservableArrayList<FlashCardEntry> flashcardEntries;
+    private ObservableArrayList<FlashCardEntry> status1;
+    private ObservableArrayList<FlashCardEntry> status2;
 
     public main_fragment() {
         super(R.layout.fragment_main_fragment);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FlashCardViewModel viewModel = new ViewModelProvider(getActivity()).get(FlashCardViewModel.class);
-        ObservableArrayList<FlashCardEntry> flashcardEntries = viewModel.getEntries();
-        TextView term  = view.findViewById(R.id.Term);
-        TextView answer = view.findViewById(R.id.Answer);
-        flashcardEntries.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<FlashCardEntry>>() {
-            @Override
-            public void onChanged(ObservableList<FlashCardEntry> sender) {
-                if (!isDataLoaded){
-                    isDataLoaded = true;
-                    term.setText(flashcardEntries.get(0).front);
-                    answer.setText(flashcardEntries.get(0).back);
-                }
-            }
-
-            @Override
-            public void onItemRangeChanged(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
-            @Override
-            public void onItemRangeInserted(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
-
-            @Override
-            public void onItemRangeMoved(ObservableList<FlashCardEntry> sender, int fromPosition, int toPosition, int itemCount) { }
-
-            @Override
-            public void onItemRangeRemoved(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
-        });
-
+        try {
+            viewModel.doneLoading.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        flashcardEntries = viewModel.getEntries();
+        term  = view.findViewById(R.id.Term);
+        answer = view.findViewById(R.id.Answer);
+        if (!flashcardEntries.isEmpty()){
+            term.setText(flashcardEntries.get(0).front);
+            answer.setText(flashcardEntries.get(0).back);
+        }
         // TODO try to figure out a way to make it so it doesn't have to wait for the array to get the data by using thread.sleep
         // TODO this also causes an infinite loop when the database is empty
 
@@ -122,16 +115,19 @@ public class main_fragment extends Fragment {
 
 
         again.setOnClickListener(view1 -> {
+            if (!flashcardEntries.isEmpty()) {
+
+                Collections.rotate(flashcardEntries, -1);
+
+                term.setText(flashcardEntries.get(0).front);
+                answer.setText(flashcardEntries.get(0).back);
+            }
             System.out.println("AGAIN PRESSED");
 //            againGoodBottomBar.setVisibility(View.GONE);
             againGoodBottomBar.setVisibility(View.INVISIBLE);
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
 
-            Collections.rotate(flashcardEntries, -1);
-
-            term.setText(flashcardEntries.get(0).front);
-            answer.setText(flashcardEntries.get(0).back);
 
         });
 
@@ -140,6 +136,12 @@ public class main_fragment extends Fragment {
             againGoodBottomBar.setVisibility(View.INVISIBLE);
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
+
+            flashcardEntries.get(0).status =
+            /* Remove from array
+
+             */
+
         });
 
 

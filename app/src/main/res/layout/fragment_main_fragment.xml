@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:gravity="center_horizontal"
-                android:text="Term"
+                android:text="Deck is empty!"
                 android:textSize="34sp" />
 
             <TextView
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:gravity="center_horizontal"
-                android:text="Answer"
+                android:text="Add a card with the 'Add' button!"
                 android:textSize="34sp"
                 android:visibility="invisible" />
 

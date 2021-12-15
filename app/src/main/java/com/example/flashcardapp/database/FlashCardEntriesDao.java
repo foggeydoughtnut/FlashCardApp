@@ -22,7 +22,7 @@ public interface FlashCardEntriesDao {
     public FlashCardEntry findById(long id);
 
     @Query("SELECT * FROM flashcardentry WHERE status = :status")
-    public FlashCardEntry[] findAllByStatus(int status);
+    public List<FlashCardEntry> findAllByStatus(int status);
 
     @Update
     public void update(FlashCardEntry entry);
