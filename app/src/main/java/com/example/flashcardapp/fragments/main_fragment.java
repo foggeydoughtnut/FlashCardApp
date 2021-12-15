@@ -35,13 +35,14 @@ public class main_fragment extends Fragment {
         ObservableArrayList<FlashCardEntry> flashcardEntries = viewModel.getEntries();
 
         // TODO try to figure out a way to make it so it doesn't have to wait for the array to get the data by using thread.sleep
-        while(flashcardEntries.size() == 0){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        // TODO this also causes an infinite loop when the database is empty
+//        while(flashcardEntries.size() == 0){
+//            try {
+//                Thread.sleep(50);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
 
         Collections.shuffle(flashcardEntries);
@@ -78,10 +79,11 @@ public class main_fragment extends Fragment {
         // CARD LOGIC
         LinearLayout card = view.findViewById(R.id.Card);
         LinearLayout bottomBar = view.findViewById(R.id.bottomBar);
-//        bottomBar.setVisibility(View.INVISIBLE);
         LinearLayout againGoodBottomBar = view.findViewById(R.id.AgainGoodBar);
-//        bottomBar.setVisibility(View.VISIBLE);
-//        againGoodBottomBar.setVisibility(View.INVISIBLE);
+
+        bottomBar.setVisibility(View.VISIBLE); /* If I comment this out, then it will work as it should, however, the bottom-bar won't
+        be visible */
+
 
 
         card.setOnClickListener(view1 -> {
@@ -98,6 +100,7 @@ public class main_fragment extends Fragment {
         Button again = view.findViewById(R.id.Again);
         Button good = view.findViewById(R.id.Good);
 
+
         again.setOnClickListener(view1 -> {
             System.out.println("AGAIN PRESSED");
 //            againGoodBottomBar.setVisibility(View.GONE);
@@ -105,9 +108,9 @@ public class main_fragment extends Fragment {
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
 
-            Collections.rotate(flashcardEntries, -1);
-            term.setText(flashcardEntries.get(0).front);
-            answer.setText(flashcardEntries.get(0).back);
+//            Collections.rotate(flashcardEntries, -1);
+//            term.setText(flashcardEntries.get(0).front);
+//            answer.setText(flashcardEntries.get(0).back);
 
         });
 
@@ -117,6 +120,7 @@ public class main_fragment extends Fragment {
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
         });
+
 
 
     }
