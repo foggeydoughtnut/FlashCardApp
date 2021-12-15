@@ -30,11 +30,6 @@ public class FlashCardViewModel extends AndroidViewModel {
 
             entries.addAll(flashCardEntries);
         }).start();
-
-        new Thread(() -> {
-            ArrayList<FlashCardEntry> flashCardEntries = (ArrayList<FlashCardEntry>) database.getFlashCardEntriesDao().getAll();
-            entries.addAll(flashCardEntries);
-        }).start();
     }
 
     public MutableLiveData<Boolean> getSaving() {
@@ -58,6 +53,7 @@ public class FlashCardViewModel extends AndroidViewModel {
             // insert into database
             newEntry.id = database.getFlashCardEntriesDao().insert(newEntry);
 
+            entries.add(newEntry);
 
             // put into a list
 

@@ -51,6 +51,7 @@ public class add_fragment extends Fragment {
             String backText = backTextInput.getText().toString();
 
             viewModel.saveFlashCard(frontText, backText);
+
             frontTextInput.setText("");
             backTextInput.setText("");
 

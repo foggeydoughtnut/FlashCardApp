@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableList;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,6 +24,7 @@ import java.util.Collections;
 
 public class main_fragment extends Fragment {
 
+    private boolean isDataLoaded = false;
 
     public main_fragment() {
         super(R.layout.fragment_main_fragment);
@@ -33,24 +35,38 @@ public class main_fragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         FlashCardViewModel viewModel = new ViewModelProvider(getActivity()).get(FlashCardViewModel.class);
         ObservableArrayList<FlashCardEntry> flashcardEntries = viewModel.getEntries();
+        TextView term  = view.findViewById(R.id.Term);
+        TextView answer = view.findViewById(R.id.Answer);
+        flashcardEntries.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<FlashCardEntry>>() {
+            @Override
+            public void onChanged(ObservableList<FlashCardEntry> sender) {
+                if (!isDataLoaded){
+                    isDataLoaded = true;
+                    term.setText(flashcardEntries.get(0).front);
+                    answer.setText(flashcardEntries.get(0).back);
+                }
+            }
+
+            @Override
+            public void onItemRangeChanged(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
+            @Override
+            public void onItemRangeInserted(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
+
+            @Override
+            public void onItemRangeMoved(ObservableList<FlashCardEntry> sender, int fromPosition, int toPosition, int itemCount) { }
+
+            @Override
+            public void onItemRangeRemoved(ObservableList<FlashCardEntry> sender, int positionStart, int itemCount) { }
+        });
 
         // TODO try to figure out a way to make it so it doesn't have to wait for the array to get the data by using thread.sleep
         // TODO this also causes an infinite loop when the database is empty
-//        while(flashcardEntries.size() == 0){
-//            try {
-//                Thread.sleep(50);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
 
 
         Collections.shuffle(flashcardEntries);
-        TextView term  = view.findViewById(R.id.Term);
-        TextView answer = view.findViewById(R.id.Answer);
+
         // Set text to the correct card text
-//        term.setText(flashcardEntries.get(0).front);
-//        answer.setText(flashcardEntries.get(0).back);
+
 
 
         FragmentManager fragManager = getParentFragmentManager();
@@ -62,6 +78,10 @@ public class main_fragment extends Fragment {
 
         decksButton.setOnClickListener((view1) -> {
             System.out.println("DECKS CLICKED");
+            flashcardEntries.forEach(thing -> {
+                System.out.printf("%s || ", thing.front);
+            });
+            System.out.println();
         });
 
         addButton.setOnClickListener(view1 -> {
@@ -108,9 +128,10 @@ public class main_fragment extends Fragment {
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
 
-//            Collections.rotate(flashcardEntries, -1);
-//            term.setText(flashcardEntries.get(0).front);
-//            answer.setText(flashcardEntries.get(0).back);
+            Collections.rotate(flashcardEntries, -1);
+
+            term.setText(flashcardEntries.get(0).front);
+            answer.setText(flashcardEntries.get(0).back);
 
         });
 
