@@ -28,12 +28,34 @@ public class main_fragment extends Fragment {
     private TextView term;
     private TextView answer;
     private ObservableArrayList<FlashCardEntry> flashcardEntries;
-    private ObservableArrayList<FlashCardEntry> status1;
-    private ObservableArrayList<FlashCardEntry> status2;
+    private int status0;
+    private int status1;
+    private int status2;
 
     public main_fragment() {
         super(R.layout.fragment_main_fragment);
 
+    }
+
+    private void getStatusSizes(){
+        status0 = 0;
+        status1 = 0;
+        status2 = 0;
+        flashcardEntries.forEach(item -> {
+            switch(item.status){
+                case 0:
+                    status0 += 1;
+                    break;
+                case 1:
+                    status1 += 1;
+                    break;
+                case 2:
+                    status2 += 1;
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     @Override
@@ -46,6 +68,7 @@ public class main_fragment extends Fragment {
             e.printStackTrace();
         }
         flashcardEntries = viewModel.getEntries();
+        getStatusSizes();
         term  = view.findViewById(R.id.Term);
         answer = view.findViewById(R.id.Answer);
         if (!flashcardEntries.isEmpty()){
@@ -121,6 +144,13 @@ public class main_fragment extends Fragment {
 
                 term.setText(flashcardEntries.get(0).front);
                 answer.setText(flashcardEntries.get(0).back);
+                if (flashcardEntries.get(0).status != 1) {
+                    if (flashcardEntries.get(0).status == 0) status0--;
+                    else status2--;
+                    flashcardEntries.get(0).status = 1;
+                    viewModel.updateCard(flashcardEntries.get(0));
+                }
+
             }
             System.out.println("AGAIN PRESSED");
 //            againGoodBottomBar.setVisibility(View.GONE);
@@ -137,7 +167,6 @@ public class main_fragment extends Fragment {
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
 
-            flashcardEntries.get(0).status =
             /* Remove from array
 
              */
