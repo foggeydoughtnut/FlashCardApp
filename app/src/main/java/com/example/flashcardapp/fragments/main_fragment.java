@@ -84,14 +84,6 @@ public class main_fragment extends Fragment {
             term.setText(flashcardEntries.get(0).front);
             answer.setText(flashcardEntries.get(0).back);
         }
-        // TODO try to figure out a way to make it so it doesn't have to wait for the array to get the data by using thread.sleep
-        // TODO this also causes an infinite loop when the database is empty
-
-
-
-
-        // Set text to the correct card text
-
 
 
         FragmentManager fragManager = getParentFragmentManager();
@@ -126,8 +118,7 @@ public class main_fragment extends Fragment {
         LinearLayout bottomBar = view.findViewById(R.id.bottomBar);
         LinearLayout againGoodBottomBar = view.findViewById(R.id.AgainGoodBar);
 
-        bottomBar.setVisibility(View.VISIBLE); /* If I comment this out, then it will work as it should, however, the bottom-bar won't
-        be visible */
+        bottomBar.setVisibility(View.VISIBLE);
 
 
 
