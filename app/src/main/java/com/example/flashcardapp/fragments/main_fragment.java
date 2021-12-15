@@ -62,6 +62,14 @@ public class main_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FlashCardViewModel viewModel = new ViewModelProvider(getActivity()).get(FlashCardViewModel.class);
+
+        try {
+            viewModel.doneLoading.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        viewModel.refresh();
+
         try {
             viewModel.doneLoading.await();
         } catch (InterruptedException e) {
@@ -71,6 +79,7 @@ public class main_fragment extends Fragment {
         getStatusSizes();
         term  = view.findViewById(R.id.Term);
         answer = view.findViewById(R.id.Answer);
+        Collections.shuffle(flashcardEntries);
         if (!flashcardEntries.isEmpty()){
             term.setText(flashcardEntries.get(0).front);
             answer.setText(flashcardEntries.get(0).back);
@@ -79,7 +88,7 @@ public class main_fragment extends Fragment {
         // TODO this also causes an infinite loop when the database is empty
 
 
-        Collections.shuffle(flashcardEntries);
+
 
         // Set text to the correct card text
 
@@ -149,6 +158,7 @@ public class main_fragment extends Fragment {
                     else status2--;
                     flashcardEntries.get(0).status = 1;
                     viewModel.updateCard(flashcardEntries.get(0));
+                    status1++;
                 }
 
             }
@@ -157,6 +167,7 @@ public class main_fragment extends Fragment {
             againGoodBottomBar.setVisibility(View.INVISIBLE);
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
+            updateBottomBar(view);
 
 
         });
@@ -167,11 +178,51 @@ public class main_fragment extends Fragment {
             bottomBar.setVisibility(View.VISIBLE);
             answer.setVisibility(View.INVISIBLE);
 
-            /* Remove from array
 
-             */
+            if (flashcardEntries.isEmpty()) return;
 
+            FlashCardEntry curr = flashcardEntries.get(0);
+
+            if (curr.status != 0){
+                flashcardEntries.remove(0);
+                if (curr.status == 1) {
+                    status1--;
+                }
+                else status2--;
+            }
+            else{
+                curr.status = 1;
+                status1++;
+                status0--;
+            }
+
+                viewModel.studiedCard(curr);
+
+            String front = "All done for today!";
+            String back = "I don't know what you're looking for here";
+            if (flashcardEntries.size() != 0) {
+                Collections.rotate(flashcardEntries, -1);
+                front = flashcardEntries.get(0).front;
+                back = flashcardEntries.get(0).back;
+            }
+            term.setText(front);
+            answer.setText(back);
+
+            updateBottomBar(view);
         });
+
+
+        updateBottomBar(view);
+
+    }
+
+    private void updateBottomBar(View view) {
+        TextView newCount = view.findViewById(R.id.newCardCount);
+        TextView learningCount = view.findViewById(R.id.learningCardCount);
+        TextView oldCardCount = view.findViewById(R.id.oldCardCount);
+        newCount.setText("" + status0);
+        learningCount.setText("" + status1);
+        oldCardCount.setText("" + status2);
 
 
 

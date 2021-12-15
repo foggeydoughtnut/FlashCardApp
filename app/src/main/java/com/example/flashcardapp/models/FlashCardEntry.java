@@ -21,4 +21,7 @@ public class FlashCardEntry {
 
     @ColumnInfo(name = "status")
     public int status;
+
+    @ColumnInfo(name = "time_studied")
+    public long timeStudied;
 }

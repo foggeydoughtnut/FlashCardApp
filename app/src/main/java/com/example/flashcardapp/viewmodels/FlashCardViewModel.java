@@ -18,8 +18,8 @@ import java.util.concurrent.CountDownLatch;
 public class FlashCardViewModel extends AndroidViewModel {
 
     private AppDatabase database;
-    private MutableLiveData<Boolean> saving = new MutableLiveData<>();
     private ObservableArrayList<FlashCardEntry> entries = new ObservableArrayList<>();
+    private boolean isNew;
 
     // This allows the fragments that use the data to wait to access the data until it has finished loading
     // I used the following as a reference https://stackoverflow.com/questions/4691533/java-wait-for-thread-to-finish,
@@ -28,18 +28,20 @@ public class FlashCardViewModel extends AndroidViewModel {
 
     public FlashCardViewModel(@NonNull Application application) {
         super(application);
-        saving.setValue(false);
         database = Room.databaseBuilder(application, AppDatabase.class, "flashcarddb").build();
+        isNew = true;
+        refresh();
+    }
 
+    public void refresh(){
+        entries.clear();
+        doneLoading = new CountDownLatch(1);
         new Thread(() -> {
-            ArrayList<FlashCardEntry> flashCardEntries = (ArrayList<FlashCardEntry>) database.getFlashCardEntriesDao().getAll();
+            // One day in milliseconds 86400000
+            ArrayList<FlashCardEntry> flashCardEntries = (ArrayList<FlashCardEntry>) database.getFlashCardEntriesDao().getAllCurrent(System.currentTimeMillis() - 30000);
             entries.addAll(flashCardEntries);
             doneLoading.countDown();
         }).start();
-    }
-
-    public MutableLiveData<Boolean> getSaving() {
-        return saving;
     }
 
     public ObservableArrayList<FlashCardEntry> getEntries() {
@@ -54,6 +56,7 @@ public class FlashCardViewModel extends AndroidViewModel {
             newEntry.back = back;
             newEntry.createdAt = System.currentTimeMillis();
             newEntry.status = 0;
+            newEntry.timeStudied = 0;
             // insert into database
             newEntry.id = database.getFlashCardEntriesDao().insert(newEntry);
 
@@ -65,6 +68,16 @@ public class FlashCardViewModel extends AndroidViewModel {
     }
 
     public void updateCard(FlashCardEntry card) {
-        database.getFlashCardEntriesDao().update(card);
+        new Thread(() -> {
+            database.getFlashCardEntriesDao().update(card);
+        }).start();
+    }
+
+    public void studiedCard(FlashCardEntry card){
+        new Thread(() -> {
+            card.timeStudied = System.currentTimeMillis();
+            card.status = 2;
+            database.getFlashCardEntriesDao().update(card);
+        }).start();
     }
 }

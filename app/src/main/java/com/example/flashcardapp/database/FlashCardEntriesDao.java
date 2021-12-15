@@ -18,6 +18,9 @@ public interface FlashCardEntriesDao {
     @Query("SELECT * FROM flashcardentry")
     public List<FlashCardEntry> getAll();
 
+    @Query("SELECT * FROM flashcardentry WHERE time_studied <= :timeStudied")
+    public List<FlashCardEntry> getAllCurrent(long timeStudied);
+
     @Query("SELECT * FROM flashcardentry WHERE id = :id LIMIT 1")
     public FlashCardEntry findById(long id);
 
