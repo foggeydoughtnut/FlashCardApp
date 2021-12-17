@@ -13,7 +13,11 @@ import com.example.flashcardapp.models.FlashCardEntry;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class FlashCardViewModel extends AndroidViewModel {
 
@@ -62,6 +66,7 @@ public class FlashCardViewModel extends AndroidViewModel {
 
             entries.add(newEntry);
 
+
             // put into a list
 
         }).start();
@@ -79,5 +84,17 @@ public class FlashCardViewModel extends AndroidViewModel {
             card.status = 2;
             database.getFlashCardEntriesDao().update(card);
         }).start();
+    }
+
+    // Created this with some help from my brother
+    public FutureTask<FlashCardEntry> getById(Long id){
+        FutureTask<FlashCardEntry> task = new FutureTask<>(new Callable<FlashCardEntry>() {
+            @Override
+            public FlashCardEntry call() throws Exception {
+                return database.getFlashCardEntriesDao().findById(id);
+            }
+        });
+        new Thread(task).start();
+        return task;
     }
 }

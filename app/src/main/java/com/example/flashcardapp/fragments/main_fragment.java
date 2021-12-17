@@ -70,6 +70,7 @@ public class main_fragment extends Fragment {
         }
         viewModel.refresh();
 
+
         try {
             viewModel.doneLoading.await();
         } catch (InterruptedException e) {
@@ -109,8 +110,21 @@ public class main_fragment extends Fragment {
                     .commit();
         });
 
+
         editButton.setOnClickListener(view1 -> {
             System.out.println("EDIT CLICKED");
+
+            Bundle arguments = new Bundle();
+            arguments.putLong("id", flashcardEntries.get(0).id);
+
+
+            fragManager.beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_contatiner, edit_fragment.class, arguments)
+                    .commit();
+
+
+
         });
 
         // CARD LOGIC
@@ -150,6 +164,7 @@ public class main_fragment extends Fragment {
                     flashcardEntries.get(0).status = 1;
                     viewModel.updateCard(flashcardEntries.get(0));
                     status1++;
+
                 }
 
             }
