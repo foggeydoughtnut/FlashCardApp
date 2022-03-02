@@ -1,1 +1,2 @@
 # FlashCardApp
+This is a flash card app I created for Android. The user can add cards they want to create. When they push save it adds it to the Room database. When the user clicks edit it pulls up the card they are looking at, and they can change the information found on the card then push save. When that happens the card gets updated. The decks button doesn't do anything right now, but I would like to add seperate decks in the future, so you have more organization in what you study.,
