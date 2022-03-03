@@ -7,6 +7,7 @@ The bottom bar gets updated when you add a card. The blue numbers are the amount
 When you have a card to study the term will only appear. When you click on the screen you will be given the answer, and you will have two options: Again or Good. If you press again and it is a new card or old card, it will be placed in the studying section. If you press good and it is a studying card or old card, then it will be removed. If you press good and it is a new card it will be placed in the studying deck. (I wanted it so you have to study it atleast twice if it is a new card.)  
   
 The cards will be refreshed every day, so you can study them again.  
+  
 ![Screenshot 2022-03-02 16-58-54](https://user-images.githubusercontent.com/78196548/156470320-b6848723-1f94-4067-9832-7d9e6b163715.png)
 ![Screenshot 2022-03-02 16-59-36](https://user-images.githubusercontent.com/78196548/156470321-563c513c-00df-4a3d-ae90-4fa90021a107.png)
 ![Screenshot 2022-03-02 16-59-51](https://user-images.githubusercontent.com/78196548/156470322-83420207-d748-4a7a-aa22-41fbbc8ba06f.png)
